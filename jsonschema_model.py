@@ -6,6 +6,11 @@ from __future__ import unicode_literals
 class Array(list):
     Model = None
 
+    def __init__(self, *args, **kwargs):
+        list.__init__(self)
+        for e in list(*args, **kwargs):
+            self.add(e)
+
     def add(self, *args, **kwargs):
         if self.Model is not None:
             obj = self.Model(*args, **kwargs)
@@ -18,28 +23,47 @@ class Array(list):
 class Model(dict):
     schema = None
 
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self)
+        for k, v in dict(*args, **kwargs).items():
+            self.__setitem__(k, v)
+
+    def __setitem__(self, key, value):
+        try:
+            model = self._get_model(key)
+        except KeyError:
+            pass
+        else:
+            if model is not None:
+                value = model(value)
+        dict.__setitem__(self, key, value)
+
+    def _get_model(self, key):
+        schema = self.schema["properties"].get(key)
+
+        if schema is None:
+            raise KeyError(key)
+
+        if schema["type"] == "object":
+            return model_factory(schema)
+        elif schema["type"] == "array":
+            if schema["items"]["type"] == "object":
+                ArrayModel = model_factory(schema["items"])
+            else:
+                ArrayModel = None
+            return type(str("Array"), (Array,), {"Model": ArrayModel})
+        else:
+            return None
+
     def __getitem__(self, key):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            schema = self.schema["properties"].get(key)
-            if schema is None:
-                raise KeyError(key)
-
-            if schema["type"] == "object":
-                value = model_factory(schema)()
+            model = self._get_model(key)
+            if model is not None:
+                value = model()
                 dict.__setitem__(self, key, value)
                 return value
-            elif schema["type"] == "array":
-                if schema["items"]["type"] == "object":
-                    ArrayModel = model_factory(schema["items"])
-                else:
-                    ArrayModel = None
-                value = type(str("Array"), (Array,), {"Model": ArrayModel})()
-                dict.__setitem__(self, key, value)
-                return value
-            else:
-                return None
 
     def __getattr__(self, key):
         try:

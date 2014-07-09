@@ -71,3 +71,26 @@ def test_nested_array(Model):
     obj = Model()
     obj.qux.add(foo="bar")
     assert obj == {"qux": [{"foo": "bar"}]}
+
+
+def test_init_fill(Model):
+    data = {
+        "foo": "a",
+        "bar": ["b", "c"],
+        "zaz": {
+            "bar": ["d"],
+        },
+        "qux": [{"foo": "e"}, {"bar": ["f"]}],
+    }
+    obj = Model(**data)
+    assert obj.foo == "a"
+    assert obj.bar == ["b", "c"]
+    assert obj.zaz.bar == ["d"]
+    assert obj.qux[0].foo == "e"
+    assert obj.qux[1].bar == ["f"]
+    assert obj == data
+
+    g = obj.qux.add(foo="g", bar=["h"])
+    assert obj.qux[2] == {"foo": "g", "bar": ["h"]}
+    g.bar.add("i")
+    assert obj.qux[2] == {"foo": "g", "bar": ["h", "i"]}
