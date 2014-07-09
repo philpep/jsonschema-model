@@ -1,6 +1,23 @@
 Json Schema Model
 =================
 
+.. image:: https://travis-ci.org/philpep/jsonschema-model.svg?branch=master
+   :target: https://travis-ci.org/philpep/jsonschema-model
+   :alt: Build status
+
+.. image:: https://pypip.in/download/jsonschema-model/badge.png
+   :target: https://pypi.python.org/pypi/jsonschema-model/
+   :alt: Downloads
+
+.. image:: https://pypip.in/version/jsonschema-model/badge.png
+   :target: https://pypi.python.org/pypi/jsonschema-model/
+   :alt: Latest Version
+
+.. image:: https://pypip.in/license/jsonschema-model/badge.png
+   :target: https://pypi.python.org/pypi/jsonschema-model/
+   :alt: License
+
+
 Build python objects using JSON schemas::
 
     >>> import jsonschema_model
