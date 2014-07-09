@@ -1,0 +1,6 @@
+*.swp
+.tox
+build
+dist
+*.egg
+.local
