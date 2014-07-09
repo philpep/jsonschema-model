@@ -1,0 +1,4 @@
+include jsonschema_model.py
+include test_jsonschema_model.py
+include README.rst
+include LICENSE
