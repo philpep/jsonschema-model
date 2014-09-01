@@ -76,4 +76,5 @@ class Model(dict):
 
 
 def model_factory(schema):
-    return type(str(schema["name"]), (Model,), {"schema": schema})
+    name = schema.get("name", "Object")
+    return type(str(name), (Model,), {"schema": schema})

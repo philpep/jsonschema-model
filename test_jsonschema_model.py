@@ -94,3 +94,21 @@ def test_init_fill(Model):
     assert obj.qux[2] == {"foo": "g", "bar": ["h"]}
     g.bar.add("i")
     assert obj.qux[2] == {"foo": "g", "bar": ["h", "i"]}
+
+
+def test_name():
+    model = model_factory({
+        "type": "object",
+        "name": "FooObject",
+        "properties": {
+            "foo": {
+                "type": "object",
+                "properties": {
+                    "foo": {"type": "string"},
+                },
+            },
+        },
+    })
+    obj = model(foo={"foo": "bar"})
+    assert obj.__class__.__name__ == "FooObject"
+    assert obj.foo.__class__.__name__ == "Object"
