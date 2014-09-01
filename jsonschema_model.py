@@ -21,7 +21,7 @@ class Array(list):
 
 
 class Model(dict):
-    schema = None
+    _schema = None
 
     def __init__(self, *args, **kwargs):
         dict.__init__(self)
@@ -39,7 +39,7 @@ class Model(dict):
         dict.__setitem__(self, key, value)
 
     def _get_model(self, key):
-        schema = self.schema["properties"].get(key)
+        schema = self._schema["properties"].get(key)
 
         if schema is None:
             raise KeyError(key)
@@ -77,4 +77,4 @@ class Model(dict):
 
 def model_factory(schema):
     name = schema.get("name", "Object")
-    return type(str(name), (Model,), {"schema": schema})
+    return type(str(name), (Model,), {"_schema": schema})
