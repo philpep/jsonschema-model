@@ -3,6 +3,10 @@
 from __future__ import unicode_literals
 
 
+class MultipleItemFound(RuntimeError):
+    pass
+
+
 class Array(list):
     Model = None
 
@@ -18,6 +22,26 @@ class Array(list):
             obj = args[0]
         self.append(obj)
         return obj
+
+    def get_or_create(self, *args, **kwargs):
+        match = []
+        if (
+            all([args, kwargs])
+            or not any([args, kwargs])
+            or (args and len(args) != 1)
+        ):
+            raise RuntimeError("Invalid usage of get_or_create()")
+        for obj in self:
+            if kwargs and all(getattr(obj, k) == v for k, v in kwargs.items()):
+                match.append(obj)
+            elif args and args[0] == obj:
+                match.append(obj)
+        if len(match) > 1:
+            raise MultipleItemFound
+        elif len(match) == 0:
+            return self.add(*args, **kwargs)
+        else:  # 1 item
+            return match[0]
 
 
 class Model(dict):

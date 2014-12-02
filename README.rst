@@ -47,3 +47,14 @@ Build python objects using JSON schemas::
     # You can access via attribute or via dict like interface
     >>> obj["bar"][0].zaz
     'qux'
+
+    # Array have a special get_or_create() method
+    # to avoid dupplicates within an array
+    >>> obj.bar.get_or_create(zaz="xuq")
+    {'zaz': 'xuq'}
+    >>> obj.bar
+    [{'zaz': 'qux'}, {'zaz': 'xuq'}]
+    >>> obj.bar.get_or_create(zaz="xuq")
+    {'zaz': 'xuq'}
+    >>> obj.bar
+    [{'zaz': 'qux'}, {'zaz': 'xuq'}]

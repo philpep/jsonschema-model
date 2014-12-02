@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import copy
 import pytest
-from jsonschema_model import model_factory
+from jsonschema_model import model_factory, MultipleItemFound
 
 
 @pytest.fixture
@@ -112,3 +112,63 @@ def test_name():
     obj = model(foo={"foo": "bar"})
     assert obj.__class__.__name__ == "FooObject"
     assert obj.foo.__class__.__name__ == "Object"
+
+
+def test_get_or_create_invalid():
+    model = model_factory({
+        "type": "object",
+        "properties": {
+            "l": {"type": "array", "items": {"type": "string"}},
+        },
+    })
+    obj = model()
+    with pytest.raises(RuntimeError):
+        obj.l.get_or_create("foo", "bar")
+    with pytest.raises(RuntimeError):
+        obj.l.get_or_create("foo", a="bar")
+    with pytest.raises(MultipleItemFound):
+        obj.l.add("foo")
+        obj.l.add("foo")
+        obj.l.get_or_create("foo")
+
+
+def test_get_or_create_simple():
+    model = model_factory({
+        "type": "object",
+        "properties": {
+            "l": {"type": "array", "items": {"type": "string"}},
+        },
+    })
+    obj = model()
+    obj.l.get_or_create("foo")
+    obj.l.get_or_create("foo")
+    assert obj == {"l": ["foo"]}
+    obj.l.get_or_create("bar")
+    assert obj == {"l": ["foo", "bar"]}
+
+
+def test_get_or_create_object():
+    model = model_factory({
+        "type": "object",
+        "properties": {
+            "l": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "a": {"type": "string"},
+                        "b": {"type": "string"},
+                    },
+                },
+            },
+        },
+    })
+    obj = model()
+    obj.l.get_or_create(a="foo")
+    assert obj == {"l": [{"a": "foo"}]}
+    obj.l.get_or_create(a="foo")
+    assert obj == {"l": [{"a": "foo"}]}
+    obj.l.get_or_create(a="foo", b="bar")
+    assert obj == {"l": [{"a": "foo"}, {"a": "foo", "b": "bar"}]}
+    obj.l.get_or_create(a="foo", b="bar")
+    assert obj == {"l": [{"a": "foo"}, {"a": "foo", "b": "bar"}]}
