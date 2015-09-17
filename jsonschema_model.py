@@ -62,6 +62,10 @@ class Model(dict):
                 value = model(value)
         dict.__setitem__(self, key, value)
 
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            self.__setitem__(k, v)
+
     def _get_model(self, key):
         schema = self._schema["properties"].get(key)
 

@@ -59,6 +59,13 @@ def test_simple_array(Model):
     assert obj == {"bar": ["foo", "bar"]}
 
 
+def test_update_array(Model):
+    obj = Model()
+    obj.update(bar=["foo"])
+    obj.bar.add("bar")
+    assert obj == {"bar": ["foo", "bar"]}
+
+
 def test_nested(Model):
     obj = Model()
     assert obj.zaz == {}
