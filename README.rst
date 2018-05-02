@@ -5,10 +5,6 @@ Json Schema Model
    :target: https://travis-ci.org/philpep/jsonschema-model
    :alt: Build status
 
-.. image:: https://pypip.in/download/jsonschema-model/badge.png
-   :target: https://pypi.python.org/pypi/jsonschema-model/
-   :alt: Downloads
-
 .. image:: https://pypip.in/version/jsonschema-model/badge.png
    :target: https://pypi.python.org/pypi/jsonschema-model/
    :alt: Latest Version
