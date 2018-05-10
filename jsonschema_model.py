@@ -26,9 +26,9 @@ class Array(list):
     def get_or_create(self, *args, **kwargs):
         match = []
         if (
-            all([args, kwargs])
-            or not any([args, kwargs])
-            or (args and len(args) != 1)
+            all([args, kwargs]) or
+            not any([args, kwargs]) or
+            (args and len(args) != 1)
         ):
             raise RuntimeError("Invalid usage of get_or_create()")
         for obj in self:
